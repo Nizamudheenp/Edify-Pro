@@ -1,6 +1,6 @@
 const express = require('express');
-const { authMiddleware } = require('../middlewares/authMiddleware');
-const { enrollCourse, getEnrolledCourses } = require('../controllers/enrollmentController');
+const { authMiddleware, authorizeRoles } = require('../middlewares/authMiddleware');
+const { enrollCourse, getEnrolledCourses, getEnrolledStudents } = require('../controllers/enrollmentController');
 
 const router = express.Router();
 
@@ -8,5 +8,6 @@ router.use(authMiddleware);
 
 router.post('/:courseId', enrollCourse);
 router.get('/my-courses', getEnrolledCourses);
+router.get('/instructor/:courseId', authMiddleware, authorizeRoles('instructor'), getEnrolledStudents);
 
 module.exports = router;
