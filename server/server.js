@@ -13,7 +13,16 @@ app.get('/', (req, res) => {
 });
 
 const authRoutes = require('./routes/authRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const lessonRoutes = require('./routes/lessonRoutes');
+const enrollmentRoutes = require('./routes/enrollmentRoutes');
+const studentCourseRoutes = require('./routes/studentCourseRoutes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/enroll', enrollmentRoutes);
+app.use('/api/courses', studentCourseRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
