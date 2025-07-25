@@ -29,6 +29,10 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
+    if (user.isBanned) {
+      return res.status(403).json({ message: 'Your account has been banned by admin' });
+    }
+
     const token = generateToken(user._id, user.role);
     res.json({ _id: user._id, name: user.name, email, role: user.role, token });
   } catch (err) {

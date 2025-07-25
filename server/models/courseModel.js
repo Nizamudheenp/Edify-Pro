@@ -10,7 +10,8 @@ const courseSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  published: { type: Boolean, default: false }
+  published: { type: Boolean, default: false },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Course', courseSchema);

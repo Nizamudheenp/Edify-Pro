@@ -1,14 +1,24 @@
 const CourseDB = require('../models/courseModel');
+const cloudinary = require('../utils/cloudinary');
 
 exports.createCourse = async (req, res) => {
   try {
-    const { title, description, category, thumbnail } = req.body;
+    const { title, description, category } = req.body;
+
+    let thumbnailUrl = '';
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'e-learning/thumbnails'
+      });
+      thumbnailUrl = result.secure_url;
+    }
 
     const course = await CourseDB.create({
       title,
       description,
       category,
-      thumbnail,
+      thumbnail : thumbnailUrl,
       instructor: req.user._id
     });
 
@@ -32,11 +42,18 @@ exports.updateCourse = async (req, res) => {
     const course = await CourseDB.findOne({ _id: req.params.id, instructor: req.user._id });
     if (!course) return res.status(404).json({ message: 'Course not found' });
 
-    const { title, description, category, thumbnail } = req.body;
+    const { title, description, category } = req.body;
+
+     if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'e-learning/thumbnails'
+      });
+      course.thumbnail = result.secure_url;
+    }
+
     course.title = title || course.title;
     course.description = description || course.description;
     course.category = category || course.category;
-    course.thumbnail = thumbnail || course.thumbnail;
 
     const updated = await course.save();
     res.json(updated);

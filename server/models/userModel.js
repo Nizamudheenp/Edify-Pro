@@ -8,7 +8,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['student', 'instructor', 'admin'],
     default: 'student'
+  },
+  isBanned: {
+    type: Boolean,default: false
   }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
