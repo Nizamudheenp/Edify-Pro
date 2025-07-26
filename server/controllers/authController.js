@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
     const user = await UserDB.create({ name, email, password: hashedPassword, role });
 
     const token = generateToken(user._id, user.role);
-    res.status(201).json({ _id: user._id, name, email, role: user.role, token });
+    res.status(201).json({ user: { _id: user._id, email, role: user.role },  token });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user._id, user.role);
-    res.json({ _id: user._id, name: user.name, email, role: user.role, token });
+    res.json({user: { _id: user._id, email, role: user.role }, token });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
