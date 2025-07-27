@@ -7,6 +7,8 @@ import InstructorDashboard from './pages/instructor/InstructorDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
+import MyCourses from './pages/instructor/MyCourses';
+import CreateCourse from './pages/instructor/CreateCourse';
 
 const App = () => {
   return (
@@ -33,7 +35,11 @@ const App = () => {
               <InstructorDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<div>Welcome to Instructor Dashboard</div>} />
+          <Route path="courses" element={<MyCourses />} />
+          <Route path="create-course" element={<CreateCourse />} />
+        </Route>
 
         <Route
           path="/admin/dashboard"
