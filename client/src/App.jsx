@@ -3,12 +3,14 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import StudentDashboard from './pages/student/StudentDashboard';
-import InstructorDashboard from './pages/instructor/InstructorDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import MyCourses from './pages/instructor/MyCourses';
 import CreateCourse from './pages/instructor/CreateCourse';
+import DashboardLayout from './pages/instructor/DashboardLayout.jsx';
+import Overview from './pages/instructor/Overview.jsx.jsx';
+import LessonManagement from './pages/instructor/LessonManagement.jsx';
 
 const App = () => {
   return (
@@ -32,13 +34,14 @@ const App = () => {
           path="/instructor/dashboard"
           element={
             <ProtectedRoute allowedRoles={['instructor']}>
-              <InstructorDashboard />
+              <DashboardLayout />
             </ProtectedRoute>
           }
         >
-          <Route index element={<div>Welcome to Instructor Dashboard</div>} />
+          <Route index element={<Overview />} />
           <Route path="courses" element={<MyCourses />} />
           <Route path="create-course" element={<CreateCourse />} />
+          <Route path="course/:courseId/lessons" element={<LessonManagement />} />
         </Route>
 
         <Route

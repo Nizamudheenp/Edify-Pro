@@ -1,103 +1,81 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api'; 
+import api from '../../api/api';
 import { toast } from 'sonner';
 
 const CreateCourse = () => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [thumbnail, setThumbnail] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    category: '',
-    price: '',
-    thumbnail: null,
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    setForm((prev) => ({ ...prev, thumbnail: e.target.files[0] }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!form.thumbnail) {
-      toast.error('Please upload a course thumbnail');
-      return;
+    if (!title || !description || !category || !thumbnail) {
+      return toast.error('All fields are required');
     }
 
-    const data = new FormData();
-    data.append('title', form.title);
-    data.append('description', form.description);
-    data.append('category', form.category);
-    data.append('price', form.price);
-    data.append('thumbnail', form.thumbnail);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('thumbnail', thumbnail);
 
     try {
-      await api.post('/instructor/courses', data);
+      setLoading(true);
+      const res = await api.post('/instructor/courses', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
       toast.success('Course created successfully');
-      navigate('/instructor/my-courses');
+      navigate('/instructor/dashboard/courses');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Something went wrong');
+      console.error(err);
+      toast.error('Failed to create course');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Create New Course</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-4">Create New Course</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          name="title"
-          value={form.title}
-          onChange={handleChange}
           placeholder="Course Title"
-          className="w-full border p-2 rounded"
-          required
+          className="w-full p-2 border rounded"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Course Description"
-          className="w-full border p-2 rounded h-32"
-          required
-        ></textarea>
-        <input
-          type="text"
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          placeholder="Category (e.g., Web Development)"
-          className="w-full border p-2 rounded"
-          required
+          placeholder="Description"
+          className="w-full p-2 border rounded"
+          rows="4"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <input
-          type="number"
-          name="price"
-          value={form.price}
-          onChange={handleChange}
-          placeholder="Price (e.g., 999)"
-          className="w-full border p-2 rounded"
-          required
+          type="text"
+          placeholder="Category"
+          className="w-full p-2 border rounded"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         />
         <input
           type="file"
           accept="image/*"
-          onChange={handleFileChange}
           className="w-full"
-          required
+          onChange={(e) => setThumbnail(e.target.files[0])}
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          disabled={loading}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          Create Course
+          {loading ? 'Creating...' : 'Create Course'}
         </button>
       </form>
     </div>

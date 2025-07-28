@@ -22,10 +22,10 @@ const adminRoutes = require('./routes/adminRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/courses', courseRoutes);
+app.use('/api/instructor/courses', courseRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/enroll', enrollmentRoutes);
-app.use('/api/courses', studentCourseRoutes);
+app.use('/api/student/courses', studentCourseRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/assignments', assignmentRoutes);
