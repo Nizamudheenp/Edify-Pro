@@ -4,29 +4,43 @@ exports.addQuiz = async (req, res) => {
   try {
     const { lesson, questions } = req.body;
 
+    if (!lesson || !questions || !Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({ message: 'Lesson and questions are required' });
+    }
+
     const quiz = new QuizDB({ lesson, questions });
     await quiz.save();
 
     res.status(201).json({ message: 'Quiz created successfully', quiz });
   } catch (err) {
+    console.error('Add quiz error:', err);
     res.status(500).json({ message: 'Failed to create quiz' });
   }
 };
 
+
 exports.getQuizByLesson = async (req, res) => {
   try {
-    const quiz = await QuizDB.findOne({ lesson: req.params.lessonId });
-    if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
+    const { lessonId } = req.params;
 
-    res.json(quiz);
+    const quizzes = await QuizDB.find({ lesson: lessonId });
+
+    if (!quizzes || quizzes.length === 0) {
+      return res.status(404).json({ message: 'No quizzes found for this lesson' });
+    }
+
+    res.status(200).json(quizzes);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch quiz' });
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
+
+
 exports.updateQuiz = async (req, res) => {
   try {
-    const updated = await QuizDB.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await QuizDB.findByIdAndUpdate(req.params.quizId, req.body, { new: true });
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: 'Failed to update quiz' });
@@ -35,7 +49,7 @@ exports.updateQuiz = async (req, res) => {
 
 exports.deleteQuiz = async (req, res) => {
   try {
-    await QuizDB.findByIdAndDelete(req.params.id);
+    await QuizDB.findByIdAndDelete(req.params.quizId);
     res.json({ message: 'Quiz deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Failed to delete quiz' });
@@ -44,7 +58,8 @@ exports.deleteQuiz = async (req, res) => {
 
 exports.getQuizQuestionsForStudent = async (req, res) => {
   try {
-    const quiz = await QuizDB.findOne({ lesson: req.params.lessonId });
+    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
+    const quiz = await QuizDB.findOne({ lesson: lessonId });
 
     if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
 

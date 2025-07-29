@@ -96,6 +96,12 @@ const MyCourses = () => {
               >
                 Manage Lessons
               </Link>
+              <Link
+                to={`/instructor/dashboard/enrollments/${course._id}`}
+                className="text-blue-600 hover:underline"
+              >
+                View Enrollments
+              </Link>
 
             </div>
           </div>

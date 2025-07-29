@@ -11,6 +11,7 @@ import CreateCourse from './pages/instructor/CreateCourse';
 import DashboardLayout from './pages/instructor/DashboardLayout.jsx';
 import Overview from './pages/instructor/Overview.jsx.jsx';
 import LessonManagement from './pages/instructor/LessonManagement.jsx';
+import EnrolledStudents from './pages/instructor/EnrolledStudents.jsx';
 
 const App = () => {
   return (
@@ -42,6 +43,8 @@ const App = () => {
           <Route path="courses" element={<MyCourses />} />
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="course/:courseId/lessons" element={<LessonManagement />} />
+          <Route path="enrollments/:courseId" element={<EnrolledStudents />} />
+
         </Route>
 
         <Route

@@ -15,9 +15,10 @@ router.use(authMiddleware);
 
 // Instructor Routes
 router.post('/', authorizeRoles('instructor'), addQuiz);
-router.put('/:id', authorizeRoles('instructor'), updateQuiz);
-router.delete('/:id', authorizeRoles('instructor'), deleteQuiz);
-router.get('/lesson/:lessonId', authorizeRoles('instructor'), getQuizByLesson); 
+router.get('/lesson/:lessonId',authorizeRoles('instructor'), getQuizByLesson);
+router.put('/:quizId', authorizeRoles('instructor'), updateQuiz);
+router.delete('/:quizId', authorizeRoles('instructor'), deleteQuiz);
+
 
 // Student Route
 router.get('/student/questions/:lessonId', authorizeRoles('student'), getQuizQuestionsForStudent); 

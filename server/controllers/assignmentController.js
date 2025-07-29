@@ -16,6 +16,26 @@ exports.createAssignment = async (req, res) => {
   }
 };
 
+// Get assignments by lesson
+exports.getAssignmentsByLesson = async (req, res) => {
+  const { lessonId } = req.params;
+  const assignments = await AssignmentDB.find({ lesson: lessonId });
+  res.json(assignments);
+};
+
+// Update assignment
+exports.updateAssignment = async (req, res) => {
+  const updated = await AssignmentDB.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
+};
+
+// Delete assignment
+exports.deleteAssignment = async (req, res) => {
+  await AssignmentDB.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Assignment deleted' });
+};
+
+
 exports.submitAssignment = async (req, res) => {
   try {
     const { assignmentId } = req.params;

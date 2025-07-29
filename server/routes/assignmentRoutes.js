@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authMiddleware, authorizeRoles } = require('../middlewares/authMiddleware');
-const { submitAssignment, createAssignment, getSubmissions, gradeSubmission } = require('../controllers/assignmentController');
+const { submitAssignment, createAssignment, getSubmissions, gradeSubmission, updateAssignment, deleteAssignment, getAssignmentsByLesson } = require('../controllers/assignmentController');
 const { uploadAssignment } = require('../utils/multer');
 
 
@@ -19,6 +19,9 @@ router.post(
 router.use(authMiddleware, authorizeRoles('instructor'));
 
 router.post('/', createAssignment);
+router.get('/lesson/:lessonId', getAssignmentsByLesson);
+router.put('/:id', updateAssignment);
+router.delete('/:id', deleteAssignment);
 router.get('/submissions/:assignmentId', getSubmissions);
 router.put('/grade/:assignmentId/:studentId', gradeSubmission);
 
