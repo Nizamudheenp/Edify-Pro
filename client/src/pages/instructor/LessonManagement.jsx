@@ -22,6 +22,10 @@ const LessonManagement = () => {
   const [selectedLessonIdForQuiz, setSelectedLessonIdForQuiz] = useState(null);
   const [quizzes, setQuizzes] = useState({});
 
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
+  const [showSubmissionsModal, setShowSubmissionsModal] = useState(false);
+
   const fetchLessons = async () => {
     try {
       const res = await api.get(`/lessons/${courseId}`);
@@ -30,6 +34,29 @@ const LessonManagement = () => {
       toast.error('Failed to fetch lessons');
     }
   };
+
+  const fetchSubmissions = async (assignmentId) => {
+    try {
+      const res = await api.get(`/assignments/submissions/${assignmentId}`);
+      setSubmissions(res.data);
+      setSelectedAssignmentId(assignmentId);
+      setShowSubmissionsModal(true);
+    } catch {
+      toast.error('Failed to fetch submissions');
+    }
+  };
+
+  const gradeSubmission = async (studentId, grade) => {
+    try {
+      await api.put(`/assignments/grade/${selectedAssignmentId}/${studentId}`, { grade });
+      toast.success('Graded successfully');
+      fetchSubmissions(selectedAssignmentId); // Refresh list
+    } catch {
+      toast.error('Failed to grade');
+    }
+  };
+
+
 
   const fetchQuizzes = async (lessonId) => {
     try {
@@ -231,6 +258,7 @@ const LessonManagement = () => {
       description: assignment.description,
       dueDate: assignment.dueDate?.slice(0, 10),
     });
+    setAssignmentLessonId(assignment.lesson);
     setEditingAssignmentId(assignment._id);
     setShowAssignmentModal(true);
   };
@@ -244,6 +272,13 @@ const LessonManagement = () => {
       toast.error('Failed to delete assignment');
     }
   };
+
+  const closeAssignmentModal = () => {
+    setShowAssignmentModal(false);
+    setAssignmentForm({ title: '', description: '', dueDate: '' });
+    setEditingAssignmentId(null);
+  };
+
 
 
   return (
@@ -272,7 +307,7 @@ const LessonManagement = () => {
             {assignments[lesson._id]?.map((assignment) => (
               <div key={assignment._id} className="bg-gray-100 p-3 mt-2 rounded">
                 <h4 className="font-semibold">{assignment.title}</h4>
-                <p className="text-sm text-gray-600">{assignment.instructions}</p>
+                <p className="text-sm text-gray-600">{assignment.description}</p>
                 <div className="mt-2 space-x-2">
                   <button
                     onClick={() => handleEditAssignment(assignment)}
@@ -285,6 +320,9 @@ const LessonManagement = () => {
                     className="text-red-600 hover:underline"
                   >
                     Delete
+                  </button>
+                  <button onClick={() => fetchSubmissions(assignment._id)} className="text-green-600 hover:underline">
+                    View Submissions
                   </button>
                 </div>
               </div>
@@ -360,13 +398,53 @@ const LessonManagement = () => {
               <textarea name="description" placeholder="Description" value={assignmentForm.description} onChange={handleAssignmentChange} className="w-full p-2 border rounded" required />
               <input type="date" name="dueDate" value={assignmentForm.dueDate} onChange={handleAssignmentChange} className="w-full p-2 border rounded" required />
               <div className="flex justify-end gap-3">
-                <button type="button" onClick={() => setShowAssignmentModal(false)} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                <button type="button" onClick={closeAssignmentModal} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
                 <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {showSubmissionsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-md w-full max-w-xl">
+            <h2 className="text-xl mb-4">Student Submissions</h2>
+            {submissions.length === 0 ? (
+              <p>No submissions yet.</p>
+            ) : (
+              submissions.map((submission, i) => (
+                <div key={i} className="mb-4 border-b pb-2">
+                  <p><strong>Student:</strong> {submission.student.name} ({submission.student.email})</p>
+                  <p><a href={submission.fileUrl} className="text-blue-600" target="_blank" rel="noopener noreferrer">View Submission</a></p>
+                  <p><strong>Grade:</strong> {submission.grade}</p>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      placeholder="Enter grade"
+                      className="border p-1 rounded mr-2"
+                      defaultValue={submission.grade !== 'Not graded' ? submission.grade : ''}
+                      onChange={(e) => submission._newGrade = e.target.value}
+                    />
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                      onClick={() => gradeSubmission(submission.student._id, submission._newGrade)}
+                    >
+                      Grade
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+            <div className="mt-4 text-right">
+              <button onClick={() => setShowSubmissionsModal(false)} className="bg-gray-500 text-white px-4 py-2 rounded">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {quizModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
