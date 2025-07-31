@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import StudentDashboard from './pages/student/StudentDashboard';
+import StudentDashboard from './pages/student/StudentDashboardLayout.jsx.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
@@ -12,6 +12,11 @@ import DashboardLayout from './pages/instructor/DashboardLayout.jsx';
 import Overview from './pages/instructor/Overview.jsx.jsx';
 import LessonManagement from './pages/instructor/LessonManagement.jsx';
 import EnrolledStudents from './pages/instructor/EnrolledStudents.jsx';
+import StudentOverview from './pages/student/StudentOverview.jsx';
+import ProgressTracker from './pages/student/ProgressTracker.jsx';
+import StudentCourses from './pages/student/StudentCourses.jsx';
+import StudentCourseDetail from './pages/student/StudentCourseDetail.jsx';
+import MyEnrolledCourses from './pages/student/MyEnrolledCourses.jsx';
 
 const App = () => {
   return (
@@ -29,7 +34,13 @@ const App = () => {
               <StudentDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<StudentOverview />} />
+          <Route path="courses" element={<StudentCourses />} />
+          <Route path="courses/:id" element={<StudentCourseDetail />} />
+          <Route path="my-courses" element={<MyEnrolledCourses />} />
+          <Route path="progress" element={<ProgressTracker />} />
+        </Route>
 
         <Route
           path="/instructor/dashboard"
