@@ -32,7 +32,7 @@ const MyEnrolledCourses = () => {
               <img src={course.thumbnail} alt="Thumbnail" className="h-40 w-full object-cover rounded mb-2" />
               <h3 className="text-lg font-semibold">{course.title}</h3>
               <p className="text-sm text-gray-600 mb-2">{course.description?.slice(0, 80)}...</p>
-              <Link to={`/student/dashboard/courses/${course._id}`} className="text-blue-600 underline">
+              <Link to={`/student/dashboard/lessons/${course._id}`} className="text-blue-600 underline">
                 Go to Course
               </Link>
             </div>

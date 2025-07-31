@@ -17,6 +17,7 @@ import ProgressTracker from './pages/student/ProgressTracker.jsx';
 import StudentCourses from './pages/student/StudentCourses.jsx';
 import StudentCourseDetail from './pages/student/StudentCourseDetail.jsx';
 import MyEnrolledCourses from './pages/student/MyEnrolledCourses.jsx';
+import StudentLessonView from './pages/student/StudentLessonView.jsx';
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
           <Route path="courses/:id" element={<StudentCourseDetail />} />
           <Route path="my-courses" element={<MyEnrolledCourses />} />
           <Route path="progress" element={<ProgressTracker />} />
+          <Route path="lessons/:id" element={<StudentLessonView />} />
         </Route>
 
         <Route

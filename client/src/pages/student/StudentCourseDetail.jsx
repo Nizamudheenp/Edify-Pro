@@ -7,14 +7,21 @@ const StudentCourseDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
+    const [isEnrolled, setIsEnrolled] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
                 const res = await api.get(`/student/courses/${id}`);
-                setCourse(res.data);
+                setCourse(res.data.course);
+                setIsEnrolled(res.data.isEnrolled);
+                
             } catch (err) {
                 console.error('Error fetching course:', err);
+                toast.error("Failed to load course");
+            } finally {
+                setLoading(false);
             }
         };
         fetchCourse();
@@ -30,7 +37,8 @@ const StudentCourseDetail = () => {
         }
     };
 
-    if (!course) return <div>Loading...</div>;
+    if (loading) return <div className="text-center mt-10">Loading...</div>;
+    if (!course) return <div className="text-center mt-10">Course not found</div>;
 
     return (
         <div className="max-w-3xl mx-auto p-4">
@@ -45,12 +53,22 @@ const StudentCourseDetail = () => {
                 Instructor: {course.instructor?.name}
             </p>
 
-            <button
-                onClick={handleEnroll}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-                Enroll Now
-            </button>        </div>
+            {isEnrolled ? (
+                <button
+                    onClick={() => navigate(`/student/dashboard/lessons/${id}`)}
+                    className="bg-green-600 text-white px-4 py-2 rounded mt-4 hover:bg-green-700 transition"
+                >
+                    Go to Course
+                </button>
+            ) : (
+                <button
+                    onClick={handleEnroll}
+                    className="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700 transition"
+                >
+                    Enroll Now
+                </button>
+            )}
+        </div>
     );
 };
 
