@@ -3,7 +3,6 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import StudentDashboard from './pages/student/StudentDashboardLayout.jsx.jsx';
-import AdminDashboard from './pages/admin/AdminDashboard';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import MyCourses from './pages/instructor/MyCourses';
@@ -18,6 +17,11 @@ import StudentCourses from './pages/student/StudentCourses.jsx';
 import StudentCourseDetail from './pages/student/StudentCourseDetail.jsx';
 import MyEnrolledCourses from './pages/student/MyEnrolledCourses.jsx';
 import StudentLessonView from './pages/student/StudentLessonView.jsx';
+import AdminDashboardLayout from './pages/admin/AdminDashboardLayout.jsx.jsx';
+import AdminOverview from './pages/admin/AdminOverview.jsx';
+import ManageUsers from './pages/admin/ManageUsers.jsx';
+import ManageCourses from './pages/admin/ManageCourses.jsx';
+import Reports from './pages/admin/Reports.jsx';
 
 const App = () => {
   return (
@@ -64,10 +68,15 @@ const App = () => {
           path="/admin/dashboard"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
+              <AdminDashboardLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<AdminOverview />} />
+          <Route path="users" element={<ManageUsers />} />
+          <Route path="courses" element={<ManageCourses />} />
+          <Route path="reports" element={<Reports />} />
+        </Route>
 
       </Routes>
     </Router>

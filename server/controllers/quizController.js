@@ -90,11 +90,10 @@ exports.getAllQuizQuestionsForStudent = async (req, res) => {
 
 exports.submitQuiz = async (req, res) => {
   try {
-    const { selectedAnswers } = req.body;
+    const { selectedAnswers,quizId } = req.body;
     const studentId = req.user._id;
-    const lessonId = req.params.lessonId;
-
-    const quiz = await QuizDB.findOne({ lesson: lessonId });
+    
+    const quiz = await QuizDB.findById(quizId);
 
     if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
 
