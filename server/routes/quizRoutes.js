@@ -6,9 +6,9 @@ const {
   getQuizByLesson,
   updateQuiz,
   deleteQuiz,
-  getQuizQuestionsForStudent,
   submitQuiz,
   getQuizResult,
+  getAllQuizQuestionsForStudent,
 } = require('../controllers/quizController');
 
 router.use(authMiddleware);
@@ -21,7 +21,7 @@ router.delete('/:quizId', authorizeRoles('instructor'), deleteQuiz);
 
 
 // Student Route
-router.get('/student/questions/:lessonId', authorizeRoles('student'), getQuizQuestionsForStudent); 
+router.get('/student/questions/all/:lessonId', authorizeRoles('student'), getAllQuizQuestionsForStudent); 
 router.post('/student/submit/:lessonId', authorizeRoles('student'), submitQuiz); 
 router.get('/student/result/:lessonId', authorizeRoles('student'), getQuizResult); 
 

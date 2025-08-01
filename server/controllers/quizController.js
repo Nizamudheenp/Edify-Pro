@@ -56,23 +56,37 @@ exports.deleteQuiz = async (req, res) => {
   }
 };
 
-exports.getQuizQuestionsForStudent = async (req, res) => {
+exports.getAllQuizQuestionsForStudent = async (req, res) => {
   try {
-    const lessonId = new mongoose.Types.ObjectId(req.params.lessonId);
-    const quiz = await QuizDB.findOne({ lesson: lessonId });
+    const { lessonId } = req.params;
+    const studentId = req.user._id;
 
-    if (!quiz) return res.status(404).json({ message: 'Quiz not found' });
+    const quizzes = await QuizDB.find({ lesson: lessonId });
 
-    const questions = quiz.questions.map(q => ({
-      question: q.question,
-      options: q.options
-    }));
+    const formatted = quizzes.map((quiz) => {
+      const alreadyAttempted = quiz.attempts.find(
+        (a) => a.student.toString() === studentId.toString()
+      );
 
-    res.json({ questions });
+      return {
+        _id: quiz._id,
+        attempted: !!alreadyAttempted,
+        score: alreadyAttempted?.score || 0,
+        questions: quiz.questions.map((q) => ({
+          _id: q._id,
+          question: q.question,
+          options: q.options,
+        })),
+      };
+    });
+
+    res.json({ quizzes: formatted });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to load quiz questions' });
+    console.error('Quiz Load Error:', err);
+    res.status(500).json({ message: 'Failed to load quizzes' });
   }
 };
+
 
 exports.submitQuiz = async (req, res) => {
   try {
@@ -124,6 +138,7 @@ exports.getQuizResult = async (req, res) => {
 
     res.json({
       score: attempt.score,
+      total: quiz.questions.length,
       attemptedAt: attempt.attemptedAt,
       selectedAnswers: attempt.selectedAnswers
     });

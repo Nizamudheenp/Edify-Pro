@@ -50,7 +50,7 @@ const LessonManagement = () => {
     try {
       await api.put(`/assignments/grade/${selectedAssignmentId}/${studentId}`, { grade });
       toast.success('Graded successfully');
-      fetchSubmissions(selectedAssignmentId); // Refresh list
+      fetchSubmissions(selectedAssignmentId); 
     } catch {
       toast.error('Failed to grade');
     }

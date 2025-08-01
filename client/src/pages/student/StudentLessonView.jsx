@@ -17,7 +17,7 @@ const StudentLessonView = () => {
         const res = await api.get(`/lessons/student/${courseId}`);
         const completed = await api.get(`/lessons/student/${courseId}/completed`);
         setLessons(res.data);
-        setCompletedLessons(completed.data.completedLessons  || []);
+        setCompletedLessons(completed.data.completedLessons || []);
       } catch (err) {
         console.error('Error loading lessons:', err);
       }
@@ -71,9 +71,10 @@ const StudentLessonView = () => {
               <div className="mt-4 space-y-4">
                 <p>{lesson.content}</p>
                 <StudentQuiz lessonId={lesson._id} />
-                {lesson.assignment && (
-                  <StudentAssignment assignment={lesson.assignment} />
+                {lesson._id && (
+                  <StudentAssignment lessonId={lesson._id} />
                 )}
+
               </div>
             )}
           </div>

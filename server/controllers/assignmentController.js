@@ -45,7 +45,7 @@ exports.submitAssignment = async (req, res) => {
       resource_type: 'auto'
     });
 
-    fs.unlinkSync(req.file.path); 
+    fs.unlinkSync(req.file.path);
 
     const assignment = await AssignmentDB.findById(assignmentId);
     assignment.submissions.push({
@@ -92,3 +92,35 @@ exports.gradeSubmission = async (req, res) => {
     res.status(500).json({ message: 'Grading failed', error: err.message });
   }
 };
+
+exports.getStudentAssignments = async (req, res) => {
+  const { lessonId } = req.params;
+  const studentId = req.user._id;
+
+  try {
+    const assignments = await AssignmentDB.find({ lesson: lessonId });
+
+    const studentAssignments = assignments.map((assignment) => {
+      const submission = assignment.submissions.find(
+        (sub) => sub.student.toString() === studentId.toString()
+      );
+
+      return {
+        _id: assignment._id,
+        title: assignment.title,
+        description: assignment.description,
+        dueDate: assignment.dueDate,
+        submitted: !!submission,
+        fileUrl: submission?.fileUrl || null,
+        grade: submission?.grade ?? null,
+      };
+    });
+
+    res.json(studentAssignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch assignments' });
+  }
+};
+
+
