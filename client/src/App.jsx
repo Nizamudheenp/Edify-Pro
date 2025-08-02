@@ -19,9 +19,9 @@ import MyEnrolledCourses from './pages/student/MyEnrolledCourses.jsx';
 import StudentLessonView from './pages/student/StudentLessonView.jsx';
 import AdminDashboardLayout from './pages/admin/AdminDashboardLayout.jsx.jsx';
 import AdminOverview from './pages/admin/AdminOverview.jsx';
-import ManageUsers from './pages/admin/ManageUsers.jsx';
-import ManageCourses from './pages/admin/ManageCourses.jsx';
 import Reports from './pages/admin/Reports.jsx';
+import AdminUsers from './pages/admin/ManageUsers.jsx';
+import AdminCourses from './pages/admin/ManageCourses.jsx';
 
 const App = () => {
   return (
@@ -73,8 +73,8 @@ const App = () => {
           }
         >
           <Route index element={<AdminOverview />} />
-          <Route path="users" element={<ManageUsers />} />
-          <Route path="courses" element={<ManageCourses />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="courses" element={<AdminCourses />} />
           <Route path="reports" element={<Reports />} />
         </Route>
 

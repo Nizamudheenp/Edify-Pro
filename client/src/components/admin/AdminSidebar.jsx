@@ -11,7 +11,6 @@ const AdminSidebar = () => {
     { path: '/admin/dashboard', label: 'Dashboard' },
     { path: '/admin/dashboard/users', label: 'Manage Users' },
     { path: '/admin/dashboard/courses', label: 'Manage Courses' },
-    { path: '/admin/dashboard/reports', label: 'Reports' },
   ];
 
   return (

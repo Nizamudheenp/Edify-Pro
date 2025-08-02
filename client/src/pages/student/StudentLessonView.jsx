@@ -46,7 +46,9 @@ const StudentLessonView = () => {
         return (
           <div key={lesson._id} className="border p-4 mb-4 rounded shadow">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{lesson.title}</h3>
+              <h3 className="text-lg font-semibold">
+                {lesson.title} {isCompleted && <span className="text-green-600">✅</span>}
+              </h3>
               <div className="flex gap-2">
                 {!isCompleted && (
                   <button

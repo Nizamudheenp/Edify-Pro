@@ -50,7 +50,7 @@ const LessonManagement = () => {
     try {
       await api.put(`/assignments/grade/${selectedAssignmentId}/${studentId}`, { grade });
       toast.success('Graded successfully');
-      fetchSubmissions(selectedAssignmentId); 
+      fetchSubmissions(selectedAssignmentId);
     } catch {
       toast.error('Failed to grade');
     }
@@ -61,11 +61,17 @@ const LessonManagement = () => {
   const fetchQuizzes = async (lessonId) => {
     try {
       const res = await api.get(`/quizzes/lesson/${lessonId}`);
-      setQuizzes((prev) => ({ ...prev, [lessonId]: res.data }));
-    } catch {
-      toast.error('Failed to fetch quizzes');
+      const data = Array.isArray(res.data) ? res.data : []; 
+      setQuizzes((prev) => ({ ...prev, [lessonId]: data }));
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setQuizzes((prev) => ({ ...prev, [lessonId]: [] }));
+      } else {
+        toast.error('Failed to fetch quizzes');
+      }
     }
   };
+
 
   const fetchAssignments = async (lessonId) => {
     try {
