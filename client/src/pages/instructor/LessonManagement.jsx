@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../api/api';
 import { toast } from 'sonner';
+import InstructorQuizzes from '../../components/instructor/InstructorQuizzes';
 
 const LessonManagement = () => {
   const { courseId } = useParams();
@@ -10,17 +11,13 @@ const LessonManagement = () => {
   const [editingLesson, setEditingLesson] = useState(null);
   const [form, setForm] = useState({ title: '', content: '', videoUrl: '' });
 
+  const [quizzes, setQuizzes] = useState({});
+
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
   const [assignmentLessonId, setAssignmentLessonId] = useState(null);
   const [assignmentForm, setAssignmentForm] = useState({ title: '', description: '', dueDate: '' });
   const [assignments, setAssignments] = useState({});
   const [editingAssignmentId, setEditingAssignmentId] = useState(null);
-
-  const [quizModalOpen, setQuizModalOpen] = useState(false);
-  const [editingQuiz, setEditingQuiz] = useState(null);
-  const [quizForm, setQuizForm] = useState({ question: '', options: ['', '', '', ''], correctAnswerIndex: 0 });
-  const [selectedLessonIdForQuiz, setSelectedLessonIdForQuiz] = useState(null);
-  const [quizzes, setQuizzes] = useState({});
 
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [submissions, setSubmissions] = useState([]);
@@ -58,20 +55,6 @@ const LessonManagement = () => {
 
 
 
-  const fetchQuizzes = async (lessonId) => {
-    try {
-      const res = await api.get(`/quizzes/lesson/${lessonId}`);
-      const data = Array.isArray(res.data) ? res.data : []; 
-      setQuizzes((prev) => ({ ...prev, [lessonId]: data }));
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setQuizzes((prev) => ({ ...prev, [lessonId]: [] }));
-      } else {
-        toast.error('Failed to fetch quizzes');
-      }
-    }
-  };
-
 
   const fetchAssignments = async (lessonId) => {
     try {
@@ -86,9 +69,6 @@ const LessonManagement = () => {
     fetchLessons();
   }, [courseId]);
 
-  useEffect(() => {
-    lessons.forEach((lesson) => fetchQuizzes(lesson._id));
-  }, [lessons]);
 
   useEffect(() => {
     lessons.forEach((lesson) => fetchAssignments(lesson._id));
@@ -118,7 +98,7 @@ const LessonManagement = () => {
     e.preventDefault();
     try {
       if (editingLesson) {
-        await api.put(`/lessons/${editingLesson._id}`, form);
+        await api.put(`/lessons/edit/${editingLesson._id}`, form);
         toast.success('Lesson updated');
       } else {
         await api.post(`/lessons/${courseId}`, form);
@@ -134,7 +114,7 @@ const LessonManagement = () => {
   const deleteLesson = async (lessonId) => {
     if (!window.confirm('Delete this lesson?')) return;
     try {
-      await api.delete(`/lessons/${lessonId}`);
+      await api.delete(`/lessons/delete/${lessonId}`);
       toast.success('Lesson deleted');
       fetchLessons();
     } catch {
@@ -177,87 +157,6 @@ const LessonManagement = () => {
     }
   };
 
-
-
-  const openQuizModal = (lessonId, quiz = null) => {
-    setSelectedLessonIdForQuiz(lessonId);
-    if (quiz) {
-      const firstQ = quiz.questions?.[0];
-      setEditingQuiz(quiz);
-      setQuizForm({
-        question: firstQ?.question || '',
-        options: firstQ?.options || ['', '', '', ''],
-        correctAnswerIndex: firstQ?.correctAnswerIndex ?? 0,
-      });
-    } else {
-      setEditingQuiz(null);
-      setQuizForm({ question: '', options: ['', '', '', ''], correctAnswerIndex: 0 });
-    }
-    setQuizModalOpen(true);
-  };
-
-
-  const closeQuizModal = () => {
-    setQuizModalOpen(false);
-    setEditingQuiz(null);
-  };
-
-  const handleQuizFormChange = (e, index = null) => {
-    if (index !== null) {
-      const updatedOptions = [...quizForm.options];
-      updatedOptions[index] = e.target.value;
-      setQuizForm({ ...quizForm, options: updatedOptions });
-    } else {
-      const { name, value } = e.target;
-      setQuizForm({
-        ...quizForm,
-        [name]: name === 'correctAnswerIndex' ? parseInt(value) : value,
-      });
-    }
-  };
-
-  const handleQuizSubmit = async (e) => {
-    e.preventDefault();
-
-    const formattedPayload = {
-      lesson: selectedLessonIdForQuiz,
-      questions: [
-        {
-          question: quizForm.question,
-          options: quizForm.options,
-          correctAnswerIndex: quizForm.correctAnswerIndex
-        }
-      ]
-    };
-
-    try {
-      if (editingQuiz) {
-        await api.put(`/quizzes/${editingQuiz._id}`, formattedPayload);
-        toast.success('Quiz updated');
-      } else {
-        await api.post(`/quizzes`, formattedPayload);
-        toast.success('Quiz added');
-      }
-      await fetchQuizzes(selectedLessonIdForQuiz);
-      closeQuizModal();
-    } catch (err) {
-      console.error('Quiz submission error:', err);
-      toast.error('Failed to save quiz');
-    }
-  };
-
-
-  const handleQuizDelete = async (quizId, lessonId) => {
-    if (!window.confirm('Delete this quiz?')) return;
-    try {
-      await api.delete(`/quizzes/${quizId}`);
-      toast.success('Quiz deleted');
-      await fetchQuizzes(lessonId);
-    } catch {
-      toast.error('Failed to delete quiz');
-    }
-  };
-
   const handleEditAssignment = (assignment) => {
     setAssignmentForm({
       title: assignment.title,
@@ -294,7 +193,9 @@ const LessonManagement = () => {
         <button onClick={() => openModal()} className="bg-green-600 text-white px-4 py-2 rounded">Add Lesson</button>
       </div>
 
-      {lessons.map((lesson) => (
+      {lessons.length === 0 ? (
+        <p>No lessons found.</p>
+        ): (lessons.map((lesson) => (
         <div key={lesson._id} className="border rounded p-4 mb-4 bg-white shadow">
           <div className="flex justify-between">
             <div>
@@ -335,46 +236,14 @@ const LessonManagement = () => {
             ))}
 
           </div>
+          <InstructorQuizzes
+            lessonId={lesson._id}
+            quizzes={quizzes}
+            setQuizzes={setQuizzes}
+          />
 
-          <div className="mt-4 border-t pt-4">
-            <h4 className="font-semibold">Quizzes</h4>
-            <button
-              onClick={() => openQuizModal(lesson._id)}
-              className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
-            >
-              Add Quiz
-            </button>
-
-            {quizzes[lesson._id]?.map((quiz) => (
-              <li key={quiz._id} className="text-sm">
-                <strong>Quiz:</strong>
-                <ul className="list-disc ml-4">
-                  {Array.isArray(quiz.questions) && quiz.questions.map((q, i) => (
-                    <li key={i}>
-                      {q.question}
-                      <div className="flex gap-2 mt-1">
-                        <button
-                          onClick={() => openQuizModal(lesson._id, quiz)}
-                          className="text-blue-600 text-xs"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleQuizDelete(quiz._id, lesson._id)}
-                          className="text-red-600 text-xs"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-
-          </div>
         </div>
-      ))}
+      )))}
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -451,37 +320,6 @@ const LessonManagement = () => {
         </div>
       )}
 
-
-      {quizModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-full max-w-xl">
-            <h2 className="text-xl mb-4">{editingQuiz ? 'Edit Quiz' : 'Add Quiz'}</h2>
-            <form onSubmit={handleQuizSubmit} className="space-y-4">
-              <input type="text" name="question" placeholder="Question" value={quizForm.question} onChange={handleQuizFormChange} className="w-full p-2 border rounded" required />
-              {quizForm.options.map((opt, i) => (
-                <input key={i} type="text" placeholder={`Option ${i + 1}`} value={opt} onChange={(e) => handleQuizFormChange(e, i)} className="w-full p-2 border rounded" required />
-              ))}
-              <select
-                name="correctAnswerIndex"
-                value={quizForm.correctAnswerIndex}
-                onChange={handleQuizFormChange}
-                className="w-full p-2 border rounded"
-                required
-              >
-                {quizForm.options.map((opt, idx) => (
-                  <option key={idx} value={idx}>
-                    {`Option ${idx + 1}: ${opt}`}
-                  </option>
-                ))}
-              </select>
-              <div className="flex justify-end gap-3">
-                <button type="button" onClick={closeQuizModal} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
