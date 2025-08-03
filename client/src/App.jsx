@@ -8,7 +8,6 @@ import Navbar from './components/Navbar';
 import MyCourses from './pages/instructor/MyCourses';
 import CreateCourse from './pages/instructor/CreateCourse';
 import DashboardLayout from './pages/instructor/DashboardLayout.jsx';
-import Overview from './pages/instructor/Overview.jsx.jsx';
 import LessonManagement from './pages/instructor/LessonManagement.jsx';
 import EnrolledStudents from './pages/instructor/EnrolledStudents.jsx';
 import StudentOverview from './pages/student/StudentOverview.jsx';
@@ -19,9 +18,9 @@ import MyEnrolledCourses from './pages/student/MyEnrolledCourses.jsx';
 import StudentLessonView from './pages/student/StudentLessonView.jsx';
 import AdminDashboardLayout from './pages/admin/AdminDashboardLayout.jsx.jsx';
 import AdminOverview from './pages/admin/AdminOverview.jsx';
-import Reports from './pages/admin/Reports.jsx';
 import AdminUsers from './pages/admin/ManageUsers.jsx';
 import AdminCourses from './pages/admin/ManageCourses.jsx';
+import InstructorOverview from './pages/instructor/InstructorOverview.jsx.jsx';
 
 const App = () => {
   return (
@@ -56,7 +55,7 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Overview />} />
+          <Route index element={<InstructorOverview />} />
           <Route path="courses" element={<MyCourses />} />
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="course/:courseId/lessons" element={<LessonManagement />} />
@@ -75,7 +74,6 @@ const App = () => {
           <Route index element={<AdminOverview />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="courses" element={<AdminCourses />} />
-          <Route path="reports" element={<Reports />} />
         </Route>
 
       </Routes>

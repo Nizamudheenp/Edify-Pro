@@ -1,7 +1,7 @@
-// src/pages/admin/AdminUsers.jsx
 import { useEffect, useState } from 'react';
 import api from '../../api/api';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -25,54 +25,67 @@ const AdminUsers = () => {
         isBanned: !currentStatus,
       });
       toast.success(`User ${!currentStatus ? 'banned' : 'unbanned'} successfully`);
-      fetchUsers(); // refresh list
+      fetchUsers();
     } catch (err) {
       toast.error('Failed to update user status');
     }
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="py-10 px-4 sm:px-6 lg:px-8"
+    >
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Manage Users</h2>
+
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow rounded">
-          <thead>
-            <tr className="bg-red-800 text-white">
-              <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2">Role</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Action</th>
+        <table className="min-w-full bg-white border rounded-xl shadow-sm">
+          <thead className="bg-red-700 text-white">
+            <tr>
+              <th className="px-4 py-3 text-left">Name</th>
+              <th className="px-4 py-3 text-left">Email</th>
+              <th className="px-4 py-3 text-center">Role</th>
+              <th className="px-4 py-3 text-center">Status</th>
+              <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id} className="border-t">
-                <td className="px-4 py-2">{user.name}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2 text-center">{user.role}</td>
-                <td className="px-4 py-2 text-center">
-                  {user.isBanned ? (
-                    <span className="text-red-600 font-semibold">Banned</span>
-                  ) : (
-                    <span className="text-green-600 font-semibold">Active</span>
-                  )}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  <button
-                    onClick={() => toggleBan(user._id, user.isBanned)}
-                    className={`px-3 py-1 rounded text-white ${
-                      user.isBanned ? 'bg-green-600' : 'bg-red-600'
-                    }`}
-                  >
-                    {user.isBanned ? 'Unban' : 'Ban'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr key={user._id} className="border-t hover:bg-gray-50 transition">
+                  <td className="px-4 py-3 text-gray-800">{user.name}</td>
+                  <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                  <td className="px-4 py-3 text-center capitalize text-gray-700">{user.role}</td>
+                  <td className="px-4 py-3 text-center">
+                    {user.isBanned ? (
+                      <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                        Banned
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                        Active
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => toggleBan(user._id, user.isBanned)}
+                      className={`px-4 py-1 rounded text-white font-semibold text-sm transition ${
+                        user.isBanned
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-red-600 hover:bg-red-700'
+                      }`}
+                    >
+                      {user.isBanned ? 'Unban' : 'Ban'}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="5" className="text-center py-4 text-gray-500">
+                <td colSpan="5" className="text-center py-6 text-gray-500">
                   No users found.
                 </td>
               </tr>
@@ -80,7 +93,7 @@ const AdminUsers = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -113,55 +113,60 @@ const InstructorQuizzes = ({
     };
 
     return (
-        <div className="mt-4 border-t pt-4">
-            <h4 className="font-semibold">Quizzes</h4>
-            <button
-                onClick={() => openQuizModal()}
-                className="bg-blue-500 text-white px-2 py-1 text-sm rounded hover:bg-blue-600"
-            >
-                Add Quiz
-            </button>
+        <div className="mt-6 border-t border-gray-200 pt-6">
+            <div className="flex justify-between items-center mb-2">
+                <h4 className="text-lg font-semibold text-gray-800">Quizzes</h4>
+                <button
+                    onClick={() => openQuizModal()}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
+                >
+                    + Add Quiz
+                </button>
+            </div>
 
             {quizzes[lessonId]?.map((quiz) => (
-                <li key={quiz._id} className="text-sm">
-                    <strong>Quiz:</strong>
-                    <ul className="list-disc ml-4">
-                        {Array.isArray(quiz.questions) &&
-                            quiz.questions.map((q, i) => (
-                                <li key={i}>
-                                    {q.question}
-                                    <div className="flex gap-2 mt-1">
-                                        <button
-                                            onClick={() => openQuizModal(quiz)}
-                                            className="text-blue-600 text-xs"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleQuizDelete(quiz._id)}
-                                            className="text-red-600 text-xs"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                    </ul>
-                </li>
+                <div key={quiz._id} className="bg-gray-50 border border-gray-200 p-4 rounded-xl mt-4 shadow-sm">
+                    {quiz.questions?.map((q, i) => (
+                        <div key={i} className="mb-3">
+                            <p className="text-gray-800 font-medium mb-1">{q.question}</p>
+                            <ul className="list-disc ml-6 text-sm text-gray-600">
+                                {q.options.map((option, idx) => (
+                                    <li key={idx} className={`${q.correctAnswerIndex === idx ? 'font-semibold text-green-600' : ''}`}>
+                                        {option}
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="flex gap-4 mt-2 text-sm">
+                                <button
+                                    onClick={() => openQuizModal(quiz)}
+                                    className="text-blue-600 hover:underline"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => handleQuizDelete(quiz._id)}
+                                    className="text-red-600 hover:underline"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             ))}
 
             {quizModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded shadow-md w-full max-w-xl">
-                        <h2 className="text-xl mb-4">{editingQuiz ? 'Edit Quiz' : 'Add Quiz'}</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-xl">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">{editingQuiz ? 'Edit Quiz' : 'Add Quiz'}</h2>
                         <form onSubmit={handleQuizSubmit} className="space-y-4">
                             <input
                                 type="text"
                                 name="question"
-                                placeholder="Question"
+                                placeholder="Enter quiz question"
                                 value={quizForm.question}
                                 onChange={handleQuizFormChange}
-                                className="w-full p-2 border rounded"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                                 required
                             />
                             {quizForm.options.map((opt, i) => (
@@ -171,7 +176,7 @@ const InstructorQuizzes = ({
                                     placeholder={`Option ${i + 1}`}
                                     value={opt}
                                     onChange={(e) => handleQuizFormChange(e, i)}
-                                    className="w-full p-2 border rounded"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                                     required
                                 />
                             ))}
@@ -179,26 +184,26 @@ const InstructorQuizzes = ({
                                 name="correctAnswerIndex"
                                 value={quizForm.correctAnswerIndex}
                                 onChange={handleQuizFormChange}
-                                className="w-full p-2 border rounded"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                                 required
                             >
                                 {quizForm.options.map((opt, idx) => (
                                     <option key={idx} value={idx}>
-                                        {`Option ${idx + 1}: ${opt}`}
+                                        {`Correct Answer: Option ${idx + 1} - ${opt}`}
                                     </option>
                                 ))}
                             </select>
-                            <div className="flex justify-end gap-3">
+                            <div className="flex justify-end gap-3 pt-2">
                                 <button
                                     type="button"
                                     onClick={closeQuizModal}
-                                    className="bg-gray-400 text-white px-4 py-2 rounded"
+                                    className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow"
                                 >
                                     Save
                                 </button>
@@ -209,6 +214,7 @@ const InstructorQuizzes = ({
             )}
         </div>
     );
+
 };
 
 export default InstructorQuizzes;

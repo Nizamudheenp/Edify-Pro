@@ -10,8 +10,6 @@ const ProgressTracker = () => {
         const courseRes = await api.get('/enroll/my-courses');
         const enrolledCourses = courseRes.data.map(e => e.course);
 
-        
-
         const courseProgress = await Promise.all(
           enrolledCourses.map(async (course) => {
             const lessonRes = await api.get(`/lessons/student/${course._id}`);
@@ -25,7 +23,7 @@ const ProgressTracker = () => {
               title: course.title,
               totalLessons,
               completedLessons,
-              percent
+              percent,
             };
           })
         );
@@ -40,22 +38,29 @@ const ProgressTracker = () => {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6">Your Course Progress</h2>
-      {courses.map((course, idx) => (
-        <div key={idx} className="mb-6 border p-4 rounded shadow">
-          <h3 className="text-lg font-semibold mb-2">{course.title}</h3>
-          <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mb-1">
-            <div
-              className="bg-blue-600 h-full"
-              style={{ width: `${course.percent}%` }}
-            ></div>
-          </div>
-          <p className="text-sm text-gray-600">
-            {course.completedLessons} of {course.totalLessons} lessons completed ({course.percent}%)
-          </p>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">Your Course Progress</h2>
+
+      {courses.length === 0 ? (
+        <p className="text-center text-gray-500">No enrolled courses found.</p>
+      ) : (
+        <div className="space-y-6">
+          {courses.map((course, idx) => (
+            <div key={idx} className="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">{course.title}</h3>
+              <div className="w-full bg-gray-200 h-4 rounded-full overflow-hidden mb-2">
+                <div
+                  className="bg-blue-600 h-full transition-all duration-300"
+                  style={{ width: `${course.percent}%` }}
+                ></div>
+              </div>
+              <p className="text-sm text-gray-600">
+                {course.completedLessons} of {course.totalLessons} lessons completed ({course.percent}%)
+              </p>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };

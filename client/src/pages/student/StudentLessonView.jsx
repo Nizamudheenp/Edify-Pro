@@ -37,52 +37,49 @@ const StudentLessonView = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Course Lessons</h2>
-      {lessons.map((lesson) => {
-        const isCompleted = completedLessons.includes(lesson._id);
-        const isExpanded = expandedLessonId === lesson._id;
+    <div className="max-w-4xl mx-auto p-4">
+  <h2 className="text-3xl font-bold mb-6 text-blue-800">📚 Course Lessons</h2>
 
-        return (
-          <div key={lesson._id} className="border p-4 mb-4 rounded shadow">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">
-                {lesson.title} {isCompleted && <span className="text-green-600">✅</span>}
-              </h3>
-              <div className="flex gap-2">
-                {!isCompleted && (
-                  <button
-                    className="bg-green-500 text-white px-2 py-1 rounded text-sm"
-                    onClick={() => handleMarkComplete(lesson._id)}
-                  >
-                    Mark Complete
-                  </button>
-                )}
-                <button
-                  onClick={() =>
-                    setExpandedLessonId(isExpanded ? null : lesson._id)
-                  }
-                  className="text-blue-600 underline"
-                >
-                  {isExpanded ? 'Hide' : 'View'}
-                </button>
-              </div>
-            </div>
+  {lessons.map((lesson) => {
+    const isCompleted = completedLessons.includes(lesson._id);
+    const isExpanded = expandedLessonId === lesson._id;
 
-            {isExpanded && (
-              <div className="mt-4 space-y-4">
-                <p>{lesson.content}</p>
-                <StudentQuiz lessonId={lesson._id} />
-                {lesson._id && (
-                  <StudentAssignment lessonId={lesson._id} />
-                )}
-
-              </div>
+    return (
+      <div key={lesson._id} className="bg-white border border-gray-200 rounded-xl p-5 mb-6 shadow-sm hover:shadow-md transition">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {lesson.title} {isCompleted && <span className="text-green-600">✅</span>}
+          </h3>
+          <div className="flex gap-2">
+            {!isCompleted && (
+              <button
+                onClick={() => handleMarkComplete(lesson._id)}
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition"
+              >
+                Mark Complete
+              </button>
             )}
+            <button
+              onClick={() => setExpandedLessonId(isExpanded ? null : lesson._id)}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              {isExpanded ? 'Hide' : 'View'}
+            </button>
           </div>
-        );
-      })}
-    </div>
+        </div>
+
+        {isExpanded && (
+          <div className="mt-4 space-y-5 text-gray-700">
+            <p className="whitespace-pre-line">{lesson.content}</p>
+            <StudentQuiz lessonId={lesson._id} />
+            <StudentAssignment lessonId={lesson._id} />
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
   );
 };
 

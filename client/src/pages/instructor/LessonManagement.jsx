@@ -91,66 +91,126 @@ const LessonManagement = () => {
     }
   };
 
-
-
-
-
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Lesson Management</h1>
-        <button onClick={() => openModal()} className="bg-green-600 text-white px-4 py-2 rounded">Add Lesson</button>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Lesson Management</h1>
+        <button
+          onClick={() => openModal()}
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow transition"
+        >
+          + Add Lesson
+        </button>
       </div>
 
       {lessons.length === 0 ? (
-        <p>No lessons found.</p>
-      ) : (lessons.map((lesson) => (
-        <div key={lesson._id} className="border rounded p-4 mb-4 bg-white shadow">
-          <div className="flex justify-between">
-            <div>
-              <h2 className="text-lg font-semibold">{lesson.title}</h2>
-              <p>{lesson.content}</p>
-              <p className="text-sm text-blue-600">{lesson.videoUrl}</p>
+        <p className="text-gray-600">No lessons found.</p>
+      ) : (
+        lessons.map((lesson) => (
+          <div
+            key={lesson._id}
+            className="border border-gray-200 rounded-xl p-5 mb-6 bg-white shadow-sm"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-gray-800">{lesson.title}</h2>
+                <p className="text-gray-600">{lesson.content}</p>
+                <a
+                  href={lesson.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline text-sm"
+                >
+                  {lesson.videoUrl}
+                </a>
+              </div>
+              <div className="space-x-3">
+                <button
+                  onClick={() => openModal(lesson)}
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteLesson(lesson._id)}
+                  className="text-red-600 hover:text-red-800 font-medium"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className="space-x-2">
-              <button onClick={() => openModal(lesson)} className="text-blue-600">Edit</button>
-              <button onClick={() => deleteLesson(lesson._id)} className="text-red-600">Delete</button>
-            </div>
+
+            <InstructorAssignments
+              lessonId={lesson._id}
+              assignments={assignments}
+              setAssignments={setAssignments}
+            />
+            <InstructorQuizzes
+              lessonId={lesson._id}
+              quizzes={quizzes}
+              setQuizzes={setQuizzes}
+            />
           </div>
+        ))
+      )}
 
-          <InstructorAssignments
-            lessonId={lesson._id}
-            assignments={assignments}
-            setAssignments={setAssignments}
-          />
-          <InstructorQuizzes
-            lessonId={lesson._id}
-            quizzes={quizzes}
-            setQuizzes={setQuizzes}
-          />
-
-        </div>
-      )))}
-
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-full max-w-lg">
-            <h2 className="text-xl mb-4">{editingLesson ? 'Edit Lesson' : 'Add Lesson'}</h2>
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-lg">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              {editingLesson ? 'Edit Lesson' : 'Add Lesson'}
+            </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input type="text" name="title" placeholder="Title" value={form.title} onChange={handleChange} className="w-full p-2 border rounded" required />
-              <textarea name="content" placeholder="Content" value={form.content} onChange={handleChange} className="w-full p-2 border rounded" required />
-              <input type="text" name="videoUrl" placeholder="Video URL" value={form.videoUrl} onChange={handleChange} className="w-full p-2 border rounded" required />
-              <div className="flex justify-end gap-3">
-                <button type="button" onClick={closeModal} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
-                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200"
+                required
+              />
+              <textarea
+                name="content"
+                placeholder="Content"
+                value={form.content}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200"
+                rows={4}
+                required
+              />
+              <input
+                type="text"
+                name="videoUrl"
+                placeholder="Video URL"
+                value={form.videoUrl}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200"
+                required
+              />
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow"
+                >
+                  Save
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-      
     </div>
   );
+
 };
 
 export default LessonManagement;

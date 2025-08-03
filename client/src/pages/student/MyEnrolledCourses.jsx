@@ -20,19 +20,31 @@ const MyEnrolledCourses = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">My Enrolled Courses</h2>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">My Enrolled Courses</h2>
 
       {courses.length === 0 ? (
-        <p>No enrolled courses yet.</p>
+        <p className="text-gray-500 text-center">You haven’t enrolled in any courses yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map(course => (
-            <div key={course._id} className="border p-4 rounded shadow hover:shadow-lg transition">
-              <img src={course.thumbnail} alt="Thumbnail" className="h-40 w-full object-cover rounded mb-2" />
-              <h3 className="text-lg font-semibold">{course.title}</h3>
-              <p className="text-sm text-gray-600 mb-2">{course.description?.slice(0, 80)}...</p>
-              <Link to={`/student/dashboard/lessons/${course._id}`} className="text-blue-600 underline">
+            <div
+              key={course._id}
+              className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col"
+            >
+              <img
+                src={course.thumbnail}
+                alt={course.title}
+                className="h-40 w-full object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-gray-800">{course.title}</h3>
+              <p className="text-sm text-gray-600 flex-grow mt-1 mb-4">
+                {course.description?.slice(0, 80)}...
+              </p>
+              <Link
+                to={`/student/dashboard/lessons/${course._id}`}
+                className="inline-block mt-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition"
+              >
                 Go to Course
               </Link>
             </div>

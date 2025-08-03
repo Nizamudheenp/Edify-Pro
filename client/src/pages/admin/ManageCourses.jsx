@@ -1,7 +1,7 @@
-// src/pages/admin/AdminCourses.jsx
 import { useEffect, useState } from 'react';
 import api from '../../api/api';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -21,7 +21,7 @@ const AdminCourses = () => {
         published: !currentStatus,
       });
       toast.success(`Course ${!currentStatus ? 'published' : 'unpublished'} successfully`);
-      fetchCourses(); // Refresh
+      fetchCourses();
     } catch (err) {
       toast.error('Failed to update course status');
     }
@@ -32,48 +32,60 @@ const AdminCourses = () => {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Manage Courses</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="py-10 px-4 sm:px-6 lg:px-8"
+    >
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Manage Courses</h2>
+
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border">
-          <thead className="bg-red-800 text-white">
+        <table className="min-w-full bg-white border rounded-xl shadow-sm">
+          <thead className="bg-red-700 text-white">
             <tr>
-              <th className="p-2 border">Title</th>
-              <th className="p-2 border">Instructor</th>
-              <th className="p-2 border">Published</th>
-              <th className="p-2 border">Action</th>
+              <th className="p-3 text-left">Title</th>
+              <th className="p-3 text-left">Instructor</th>
+              <th className="p-3 text-center">Status</th>
+              <th className="p-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
-            {courses.map(course => (
-              <tr key={course._id}>
-                <td className="p-2 border">{course.title}</td>
-                <td className="p-2 border">
-                  {course.instructor?.name} <br />
-                  <span className="text-xs text-gray-600">{course.instructor?.email}</span>
-                </td>
-                <td className="p-2 border text-center">
-                  {course.published ? (
-                    <span className="text-green-600 font-semibold">Published</span>
-                  ) : (
-                    <span className="text-yellow-600 font-semibold">Unpublished</span>
-                  )}
-                </td>
-                <td className="p-2 border text-center">
-                  <button
-                    onClick={() => togglePublish(course._id, course.published)}
-                    className={`px-3 py-1 rounded text-white ${
-                      course.published ? 'bg-yellow-600' : 'bg-green-600'
-                    }`}
-                  >
-                    {course.published ? 'Unpublish' : 'Publish'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {courses.length === 0 && (
+            {courses.length > 0 ? (
+              courses.map((course) => (
+                <tr key={course._id} className="border-t">
+                  <td className="p-3 font-medium text-gray-800">{course.title}</td>
+                  <td className="p-3 text-gray-700">
+                    {course.instructor?.name}
+                    <br />
+                    <span className="text-xs text-gray-500">{course.instructor?.email}</span>
+                  </td>
+                  <td className="p-3 text-center">
+                    {course.published ? (
+                      <span className="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                        Published
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                        Unpublished
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-3 text-center">
+                    <button
+                      onClick={() => togglePublish(course._id, course.published)}
+                      className={`px-4 py-1 rounded text-white font-semibold text-sm ${
+                        course.published ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'
+                      } transition`}
+                    >
+                      {course.published ? 'Unpublish' : 'Publish'}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-500">
+                <td colSpan="4" className="text-center py-6 text-gray-500">
                   No courses found.
                 </td>
               </tr>
@@ -81,7 +93,7 @@ const AdminCourses = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

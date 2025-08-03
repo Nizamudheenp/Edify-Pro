@@ -3,11 +3,11 @@ import InstructorSidebar from '../../components/instructor/InstructorSidebar';
 
 const DashboardLayout = () => {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gray-50">
       <InstructorSidebar />
-      <div className="flex-1 p-4">
+      <main className="flex-1 p-6 md:p-10 bg-white shadow-inner rounded-tl-3xl">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

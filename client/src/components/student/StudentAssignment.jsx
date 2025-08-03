@@ -59,23 +59,23 @@ const StudentAssignment = ({ lessonId }) => {
   if (!assignments.length) return null;
 
   return (
-    <div className="border-t pt-4 mt-4">
-      <h4 className="text-lg font-bold mb-2">Assignments</h4>
+    <div className="border-t pt-6 mt-6">
+      <h4 className="text-xl font-semibold mb-4 text-indigo-800">📂 Assignments</h4>
       {assignments.map((assignment) => (
         <div
           key={assignment._id}
-          className="mb-4 p-3 border rounded bg-gray-50"
+          className="mb-6 bg-white p-5 rounded-lg border shadow-sm"
         >
-          <h5 className="font-semibold">{assignment.title}</h5>
-          <p className="text-sm mb-2">{assignment.description}</p>
+          <h5 className="text-lg font-semibold text-gray-800 mb-1">{assignment.title}</h5>
+          <p className="text-sm text-gray-600 mb-3">{assignment.description}</p>
 
           {assignment.submitted ? (
-            <div className="text-green-700 text-sm mb-1">
+            <div className="text-green-700 text-sm mb-2">
               ✅ Submitted
               {assignment.fileUrl && (
                 <>
-                  {' '}
-                  | <a
+                  {' '}|{' '}
+                  <a
                     href={assignment.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -93,11 +93,11 @@ const StudentAssignment = ({ lessonId }) => {
                 onChange={(e) =>
                   handleFileChange(assignment._id, e.target.files[0])
                 }
-                className="mb-2"
+                className="mb-3 block w-full border border-gray-300 rounded px-3 py-2 text-sm"
               />
               <button
                 onClick={() => handleSubmit(assignment._id)}
-                className="bg-blue-600 text-white px-3 py-1 rounded"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition"
               >
                 Submit Assignment
               </button>
@@ -105,13 +105,14 @@ const StudentAssignment = ({ lessonId }) => {
           )}
 
           {assignment.grade !== null && (
-            <div className="mt-2 text-sm text-purple-700">
+            <div className="mt-2 text-sm text-purple-700 font-medium">
               🏆 Grade: <span className="font-semibold">{assignment.grade}</span>
             </div>
           )}
         </div>
       ))}
     </div>
+
   );
 };
 

@@ -25,7 +25,7 @@ const CreateCourse = () => {
 
     try {
       setLoading(true);
-      const res = await api.post('/instructor/courses', formData, {
+      await api.post('/instructor/courses', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -40,43 +40,61 @@ const CreateCourse = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4">Create New Course</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Course Title"
-          className="w-full p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="Description"
-          className="w-full p-2 border rounded"
-          rows="4"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          className="w-full p-2 border rounded"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          className="w-full"
-          onChange={(e) => setThumbnail(e.target.files[0])}
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Creating...' : 'Create Course'}
-        </button>
+    <div className="max-w-3xl mx-auto px-4 md:px-10 py-8 bg-white shadow-lg rounded-xl">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Create a New Course</h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block font-medium text-gray-700 mb-1">Course Title</label>
+          <input
+            type="text"
+            placeholder="e.g. React for Beginners"
+            className="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            placeholder="Describe your course content..."
+            className="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200"
+            rows="5"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium text-gray-700 mb-1">Category</label>
+          <input
+            type="text"
+            placeholder="e.g. Web Development"
+            className="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-200"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium text-gray-700 mb-1">Thumbnail Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            className="w-full"
+            onChange={(e) => setThumbnail(e.target.files[0])}
+          />
+        </div>
+
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            {loading ? 'Creating...' : 'Create Course'}
+          </button>
+        </div>
       </form>
     </div>
   );

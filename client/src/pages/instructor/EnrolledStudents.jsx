@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import api from '../../api/api';
 import { toast } from 'sonner';
 
@@ -21,20 +21,25 @@ const EnrolledStudents = () => {
   }, [courseId]);
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Enrolled Students</h1>
+    <div className="max-w-5xl mx-auto px-4 md:px-10">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Enrolled Students</h1>
 
       {students.length === 0 ? (
-        <p>No students enrolled yet.</p>
+        <div className="bg-yellow-100 text-yellow-800 p-4 rounded-md">
+          No students have enrolled in this course yet.
+        </div>
       ) : (
-        <ul className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {students.map((student) => (
-            <li key={student._id} className="border-b pb-2">
-              <p className="font-semibold">{student.name}</p>
-              <p className="text-gray-600 text-sm">{student.email}</p>
-            </li>
+            <div
+              key={student._id}
+              className="bg-white border border-gray-200 rounded-xl shadow-sm p-5 hover:shadow-md transition"
+            >
+              <h2 className="text-lg font-semibold text-gray-800">{student.name}</h2>
+              <p className="text-sm text-gray-600">{student.email}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
