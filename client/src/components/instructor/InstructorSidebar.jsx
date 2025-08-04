@@ -1,4 +1,3 @@
-// src/components/instructor/InstructorSidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { FaBars } from 'react-icons/fa';

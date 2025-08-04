@@ -1,4 +1,3 @@
-// src/components/instructor/InstructorAssignments.jsx
 import { useState } from 'react';
 import { toast } from 'sonner';
 import api from '../../api/api';

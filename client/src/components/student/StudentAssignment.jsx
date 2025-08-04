@@ -43,7 +43,6 @@ const StudentAssignment = ({ lessonId }) => {
         },
       });
       toast.success('Assignment submitted successfully!');
-      // Refresh the assignments list to update submitted/grade status
       const res = await api.get(`/assignments/student/${lessonId}`);
       setAssignments(res.data || []);
       setSelectedFiles((prev) => {
