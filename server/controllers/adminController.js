@@ -63,3 +63,45 @@ exports.getPlatformStats = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch stats' });
   }
 };
+
+exports.getTrendingCourses = async (req, res) => {
+  try {
+    const trending = await EnrollmentDB.aggregate([
+      {
+        $group: {
+          _id: '$course',
+          enrollCount: { $sum: 1 }
+        }
+      },
+      { $sort: { enrollCount: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'courseDetails'
+        }
+      },
+      {
+        $unwind: '$courseDetails'
+      },
+      {
+        $project: {
+          _id: 0,
+          courseId: '$courseDetails._id',
+          title: '$courseDetails.title',
+          enrollCount: 1,
+          thumbnail: '$courseDetails.thumbnail',
+          instructor: '$courseDetails.instructor'
+        }
+      }
+    ]);
+
+    res.status(200).json(trending);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch trending courses' });
+  }
+};
+

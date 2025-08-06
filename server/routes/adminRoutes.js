@@ -7,7 +7,8 @@ const {
   updateCourseStatus,
   getPlatformStats,
   getAllUsers,
-  updateUserStatus
+  updateUserStatus,
+  getTrendingCourses
 } = require('../controllers/adminController');
 
 router.use(authMiddleware, authorizeRoles('admin'));
@@ -17,5 +18,5 @@ router.put('/course/:id/status', updateCourseStatus);
 router.get('/stats', getPlatformStats);             
 router.get('/users', getAllUsers);
 router.put('/user/:id/status', updateUserStatus);
-
+router.get('/trending-courses', getTrendingCourses);
 module.exports = router;

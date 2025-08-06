@@ -9,6 +9,7 @@ const AdminOverview = () => {
     totalCourses: 0,
     totalEnrollments: 0,
   });
+  const [trendingCourses, setTrendingCourses] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -21,6 +22,20 @@ const AdminOverview = () => {
     };
 
     fetchStats();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTrendingCourses = async () => {
+      try {
+        const res = await api.get('/admin/trending-courses');
+        setTrendingCourses(res.data);
+      } catch (err) {
+        console.error('Failed to fetch trending courses', err);
+      }
+    };
+
+    fetchTrendingCourses();
   }, []);
 
   return (
@@ -50,7 +65,22 @@ const AdminOverview = () => {
           <h2 className="text-lg font-semibold text-gray-700">Total Enrollments</h2>
           <p className="text-3xl font-bold text-gray-900">{stats.totalEnrollments}</p>
         </div>
+
+        
+
       </div>
+      <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Most Trending Courses</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {trendingCourses.map((course) => (
+              <div key={course.courseId} className="bg-white rounded-2xl border shadow p-4 hover:shadow-lg transition">
+                <img src={course.thumbnail} alt={course.title} className="w-full h-40 object-cover rounded-xl mb-3" />
+                <h3 className="text-lg font-semibold text-gray-700">{course.title}</h3>
+                <p className="text-sm text-gray-500">Enrollments: {course.enrollCount}</p>
+              </div>
+            ))}
+          </div>
+        </div>
     </motion.div>
   );
 };
