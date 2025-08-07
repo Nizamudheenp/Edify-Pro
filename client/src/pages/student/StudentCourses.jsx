@@ -33,7 +33,7 @@ const StudentCourses = () => {
               <img
                 src={course.thumbnail}
                 alt={course.title}
-                className="w-full h-40 object-cover rounded-lg mb-4"
+                className="w-full object-contain max-h-60 rounded-lg mb-4"
               />
               <h2 className="text-xl font-semibold text-gray-800">{course.title}</h2>
               <p className="text-sm text-gray-600 mt-1 flex-grow">

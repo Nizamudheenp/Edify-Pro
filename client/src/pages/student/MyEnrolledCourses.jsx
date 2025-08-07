@@ -35,7 +35,7 @@ const MyEnrolledCourses = () => {
               <img
                 src={course.thumbnail}
                 alt={course.title}
-                className="h-40 w-full object-cover rounded-lg mb-4"
+                className="w-full object-contain max-h-60 rounded-lg mb-4"
               />
               <h3 className="text-lg font-semibold text-gray-800">{course.title}</h3>
               <p className="text-sm text-gray-600 flex-grow mt-1 mb-4">
@@ -43,7 +43,7 @@ const MyEnrolledCourses = () => {
               </p>
               <Link
                 to={`/student/dashboard/lessons/${course._id}`}
-                className="inline-block mt-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition"
+                className="inline-block mt-auto bg-blue-600 hover:bg-blue-700 text-white text-sm text-center font-medium px-4 py-2 rounded transition"
               >
                 Go to Course
               </Link>

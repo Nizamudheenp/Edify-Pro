@@ -1,6 +1,8 @@
 const LessonDB = require('../models/lessonModel');
 const EnrollmentDB = require('../models/enrollmentModel');
 const ProgressDB = require('../models/progressModel');
+const QuizDB = require('../models/quizModel');
+const AssignmentDB = require('../models/assignmentModel');
 
 exports.addLesson = async (req, res) => {
   try {
@@ -56,6 +58,11 @@ exports.deleteLesson = async (req, res) => {
     const { id } = req.params;
     const deleted = await LessonDB.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Lesson not found' });
+    await Promise.all([
+      ProgressDB.deleteMany({ lesson: id }),
+      QuizDB.deleteMany({ lesson: id }),
+      AssignmentDB.deleteMany({ lesson: id }),
+    ]);
     res.json({ message: 'Lesson deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
